@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/AppShell';
 import { createSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
