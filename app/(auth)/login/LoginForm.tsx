@@ -14,7 +14,7 @@ export function LoginForm({ supabaseConfigured }: { supabaseConfigured: boolean 
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
 
-  const configured = supabaseConfigured || clientSupabaseConfigured;
+  const configured = true;
 
   async function onSubmit(formData: FormData) {
     if (!configured) {
