@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  min-height: 100%;
+  background: #07070F;
+  color: #EAEBF5;
+}
+
+body {
+  background-image:
+    radial-gradient(900px 500px at 12% -8%, rgba(155,108,246,.16), transparent 60%),
+    radial-gradient(820px 460px at 108% 4%, rgba(45,212,222,.12), transparent 58%),
+    radial-gradient(700px 700px at 92% 110%, rgba(79,141,255,.10), transparent 60%);
+}
+
+* { box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #23233a; border-radius: 20px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@layer components {
+  .nova-card { @apply rounded-2xl border border-white/10 bg-white/[0.045] shadow-[0_20px_70px_rgba(0,0,0,.28)] backdrop-blur; }
+  .nova-card-pad { @apply nova-card p-5; }
+  .nova-title { @apply font-display text-2xl font-bold tracking-tight text-white; }
+  .nova-subtitle { @apply mt-1 max-w-3xl text-sm leading-6 text-nova-text2; }
+  .nova-label { @apply font-display text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45; }
+  .nova-btn { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2.5 font-display text-xs font-semibold tracking-wide text-white transition hover:border-nova-violet/70 hover:bg-white/[0.09]; }
+  .nova-btn-primary { @apply nova-btn border-transparent bg-gradient-to-r from-nova-violet to-nova-blue shadow-glow hover:brightness-110; }
+  .nova-input { @apply w-full rounded-xl border border-white/10 bg-nova-surface2 px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-nova-violet; }
+  .nova-select { @apply nova-input; }
+  .nova-table { @apply w-full border-separate border-spacing-0 text-sm; }
+  .nova-table th { @apply border-b border-white/10 px-3 py-3 text-left font-display text-[10px] font-semibold uppercase tracking-[.13em] text-white/45; }
+  .nova-table td { @apply border-b border-white/10 px-3 py-3 text-nova-text2; }
+}
