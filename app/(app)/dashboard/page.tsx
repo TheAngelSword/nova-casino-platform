@@ -1,4 +1,4 @@
-import { Activity, Award, Gamepad2, Gauge, ListChecks, Rocket, ShieldCheck } from 'lucide-react';
+import { Activity, Gamepad2, Gauge, ListChecks, Rocket, ShieldCheck } from 'lucide-react';
 import { getDashboardStats, getGames, getTasks } from '@/lib/data';
 import { StatCard } from '@/components/ui/StatCard';
 import { GameCard } from '@/components/GameCard';
@@ -13,10 +13,16 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-7">
-      <section>
-        <div className="nova-label">Pipeline de producción</div>
-        <h1 className="nova-title mt-2">Dashboard general</h1>
-        <p className="nova-subtitle">Vista global para controlar el avance de juegos, áreas, tareas, documentos, homologación, certificación, demos y salida a mercado.</p>
+      <section
+        className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.035] bg-cover bg-center p-7 shadow-[0_24px_80px_rgba(0,0,0,.28)]"
+        style={{ backgroundImage: "linear-gradient(90deg, rgba(7,7,15,.92), rgba(7,7,15,.72), rgba(7,7,15,.94)), url('/assets/platform/dashboard_hero_bg.webp')" }}
+      >
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-nova-violet via-nova-blue to-nova-cyan" />
+        <div className="max-w-3xl">
+          <div className="nova-label">Pipeline de producción</div>
+          <h1 className="nova-title mt-2">Dashboard general</h1>
+          <p className="nova-subtitle">Vista global para controlar el avance de juegos, áreas, tareas, documentos, homologación, certificación, demos y salida a mercado.</p>
+        </div>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">

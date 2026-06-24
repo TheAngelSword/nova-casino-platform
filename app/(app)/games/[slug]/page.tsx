@@ -16,17 +16,34 @@ const sections = [
   { title: 'Mercado y demos', icon: Rocket, body: 'Cliente objetivo, casino objetivo, versión lista, manuales, material promocional, demo pública/privada y métricas post instalación.' }
 ];
 
+function gameAsset(slug: string, file: string) {
+  return `/assets/games/${slug}/${file}`;
+}
+
 export default async function GameDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const game = await getGameBySlug(slug);
   if (!game) notFound();
 
+  const bannerUrl = gameAsset(game.slug, 'banner_wide.webp');
+  const logoUrl = gameAsset(game.slug, 'logo_horizontal.png');
+
   return (
     <div className="space-y-7">
-      <section className="nova-card-pad overflow-hidden relative">
+      <section
+        className="nova-card overflow-hidden relative min-h-[360px] bg-cover bg-center p-6 md:p-8"
+        style={{ backgroundImage: `linear-gradient(90deg, rgba(7,7,15,.94), rgba(7,7,15,.72), rgba(7,7,15,.95)), url('${bannerUrl}')` }}
+      >
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-nova-violet via-nova-blue to-nova-cyan" />
-        <div className="grid gap-6 xl:grid-cols-[1.2fr_.8fr]">
+        <div className="grid gap-7 xl:grid-cols-[1.2fr_.8fr]">
           <div>
+            <div className="mb-5 flex min-h-[96px] items-center">
+              <div
+                className="min-h-[88px] w-full max-w-[420px] bg-contain bg-left bg-no-repeat"
+                style={{ backgroundImage: `url('${logoUrl}')` }}
+                aria-label={`Logo ${game.name}`}
+              />
+            </div>
             <div className="nova-label">Ficha individual editable</div>
             <h1 className="mt-2 font-display text-3xl font-bold">{game.name}</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-nova-text2">{game.description}</p>
@@ -41,16 +58,16 @@ export default async function GameDetailPage({ params }: { params: Promise<{ slu
           </div>
           <div className="space-y-4">
             <ProgressBar value={game.progress} label="Avance general" />
-            <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+            <div className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
               <div className="nova-label">Riesgos principales</div>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-nova-text2">
-                {(game.risks ?? []).map((risk) => <li key={risk}>{risk}</li>)}
+                {(game.risks ?? []).length ? (game.risks ?? []).map((risk) => <li key={risk}>{risk}</li>) : <li>Sin riesgos registrados.</li>}
               </ul>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+            <div className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
               <div className="nova-label">Próximos pasos</div>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-nova-text2">
-                {(game.next_steps ?? []).map((step) => <li key={step}>{step}</li>)}
+                {(game.next_steps ?? []).length ? (game.next_steps ?? []).map((step) => <li key={step}>{step}</li>) : <li>Sin próximos pasos registrados.</li>}
               </ul>
             </div>
           </div>
@@ -95,5 +112,5 @@ export default async function GameDetailPage({ params }: { params: Promise<{ slu
 }
 
 function Info({ label, value }: { label: string; value?: string | null }) {
-  return <div className="rounded-xl border border-white/10 bg-white/[0.035] p-3"><div className="nova-label">{label}</div><div className="mt-1 text-sm text-white">{value || '—'}</div></div>;
+  return <div className="rounded-xl border border-white/10 bg-black/25 p-3 backdrop-blur-sm"><div className="nova-label">{label}</div><div className="mt-1 text-sm text-white">{value || '—'}</div></div>;
 }
