@@ -6,12 +6,16 @@ import {
   KanbanSquare,
   Users,
   Settings,
-  ShieldCheck
+  ShieldCheck,
+  ClipboardCheck,
+  Joystick
 } from 'lucide-react';
 
 export const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/games', label: 'Juegos', icon: Gamepad2 },
+  { href: '/slots', label: 'Slots', icon: Joystick },
+  { href: '/testing', label: 'Testing / QA', icon: ClipboardCheck },
   { href: '/statistics', label: 'Estadísticas', icon: BarChart3 },
   { href: '/documents', label: 'Documentos', icon: FolderOpen },
   { href: '/tasks', label: 'Tareas', icon: KanbanSquare },
