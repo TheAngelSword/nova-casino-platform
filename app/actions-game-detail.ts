@@ -32,7 +32,7 @@ function normalizeSlug(value: string, fallback: string) {
 }
 
 export async function updateGameSummaryAction(gameId: string, formData: FormData) {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
 
   const { data: currentGame, error: currentError } = await supabase
     .from('games')
@@ -76,7 +76,7 @@ export async function updateGameSummaryAction(gameId: string, formData: FormData
 }
 
 export async function updateGameAreaProgressAction(gameId: string, formData: FormData) {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
 
   const { data: currentGame, error: currentError } = await supabase
     .from('games')
