@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { updateGameAction } from '@/app/actions';
+import { updateGameAreaProgressAction, updateGameSummaryAction } from '@/app/actions-game-detail';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { STAGES } from '@/lib/constants';
 import { getGameBySlug } from '@/lib/data';
@@ -16,20 +16,45 @@ const sections = [
   { title: 'Mercado y demos', icon: Rocket, body: 'Cliente objetivo, casino objetivo, versión lista, manuales, material promocional, demo pública/privada y métricas post instalación.' }
 ];
 
+const areaLabels: Record<string, string> = {
+  qa: 'QA',
+  arte: 'Arte',
+  matematica: 'Matemática',
+  programacion: 'Programación',
+  homologacion: 'Homologación',
+  certificacion: 'Certificación'
+};
+
+const areaOrder = ['qa', 'arte', 'matematica', 'programacion', 'homologacion', 'certificacion'];
+
 function gameAsset(slug: string, file: string) {
   return `/assets/games/${slug}/${file}`;
 }
 
-export default async function GameDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function GameDetailPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ error?: string }>;
+}) {
   const { slug } = await params;
+  const query = searchParams ? await searchParams : {};
   const game = await getGameBySlug(slug);
   if (!game) notFound();
 
   const bannerUrl = gameAsset(game.slug, 'banner_wide.webp');
   const logoUrl = gameAsset(game.slug, 'logo_horizontal.png');
+  const areaProgress = (game.area_progress ?? {}) as Record<string, number>;
 
   return (
     <div className="space-y-7">
+      {query.error ? (
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+          No se pudo guardar el cambio: {decodeURIComponent(query.error)}
+        </div>
+      ) : null}
+
       <section
         className="nova-card overflow-hidden relative min-h-[360px] bg-cover bg-center p-6 md:p-8"
         style={{ backgroundImage: `linear-gradient(90deg, rgba(7,7,15,.94), rgba(7,7,15,.72), rgba(7,7,15,.95)), url('${bannerUrl}')` }}
@@ -76,22 +101,56 @@ export default async function GameDetailPage({ params }: { params: Promise<{ slu
 
       <section className="nova-card-pad">
         <h2 className="font-display text-lg font-bold">Editar resumen del juego</h2>
-        <form action={updateGameAction.bind(null, game.id)} className="mt-4 grid gap-3 md:grid-cols-4">
-          <input name="name" defaultValue={game.name} className="nova-input" />
-          <input name="slug" defaultValue={game.slug} className="nova-input" />
+        <p className="mt-2 text-sm text-nova-text2">
+          Este formulario actualiza el resumen general. El porcentaje de aquí es el avance general del juego.
+          Para cambiar Programación, Arte, QA u otra área, usa el formulario de avance por área.
+        </p>
+        <form action={updateGameSummaryAction.bind(null, game.id)} className="mt-4 grid gap-3 md:grid-cols-4">
+          <input name="name" defaultValue={game.name} className="nova-input" placeholder="Nombre" />
+          <input name="slug" defaultValue={game.slug} className="nova-input" placeholder="slug-del-juego" />
           <select name="stage" defaultValue={game.stage} className="nova-select">
             {STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
-          <input name="progress" type="number" min="0" max="100" defaultValue={game.progress} className="nova-input" />
+          <input name="progress" type="number" min="0" max="100" defaultValue={game.progress} className="nova-input" placeholder="Avance general %" />
           <input name="game_type" defaultValue={game.game_type ?? ''} className="nova-input" placeholder="Tipo" />
           <input name="theme" defaultValue={game.theme ?? ''} className="nova-input" placeholder="Tema" />
-          <input name="owner_name" defaultValue={game.owner_name ?? ''} className="nova-input" placeholder="Responsable" />
-          <button className="nova-btn-primary">Guardar cambios</button>
+          <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-nova-text2 md:col-span-1">
+            Responsable: {game.owner_name || '—'}
+          </div>
+          <button className="nova-btn-primary">Guardar resumen</button>
+        </form>
+      </section>
+
+      <section className="nova-card-pad">
+        <h2 className="font-display text-lg font-bold">Editar avance por área</h2>
+        <p className="mt-2 text-sm text-nova-text2">
+          Estos porcentajes actualizan las barras de QA, Arte, Matemática, Programación, Homologación y Certificación.
+          Al guardar, el avance general se recalcula automáticamente como promedio.
+        </p>
+        <form action={updateGameAreaProgressAction.bind(null, game.id)} className="mt-4 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
+          {areaOrder.map((area) => (
+            <label key={area} className="block">
+              <span className="nova-label">{areaLabels[area]}</span>
+              <input
+                name={area}
+                type="number"
+                min="0"
+                max="100"
+                defaultValue={Number(areaProgress[area] ?? 0)}
+                className="nova-input mt-2"
+              />
+            </label>
+          ))}
+          <button className="nova-btn-primary md:col-span-3 xl:col-span-6">Guardar avance por área</button>
         </form>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {Object.entries(game.area_progress ?? {}).map(([area, value]) => <div key={area} className="nova-card-pad"><ProgressBar value={Number(value)} label={area} /></div>)}
+        {Object.entries(areaProgress).map(([area, value]) => (
+          <div key={area} className="nova-card-pad">
+            <ProgressBar value={Number(value)} label={areaLabels[area] ?? area} />
+          </div>
+        ))}
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
